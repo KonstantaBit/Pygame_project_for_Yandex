@@ -21,6 +21,7 @@ def ray_cast(screen_height, cam_x, cam_y, cam_z, cam_ax,
     depth = 0
     step = 1
     height_buffer = screen_height
+    first_contact = False
     while depth < ray_distance:
         depth += step
         step += jumping
@@ -30,7 +31,12 @@ def ray_cast(screen_height, cam_x, cam_y, cam_z, cam_ax,
             if 0 < y < map_height:
                 height_on_screen = int((cam_z - height_map[x][y][0]) /
                                        (depth * math.cos(math.radians(cam_az) - ray_angle)) * scale_height + cam_ay)
-                if 0 <= height_on_screen <= height_buffer:
+                if not first_contact:
+                    height_buffer = min(height_on_screen, screen_height)
+                    first_contact = True
+                if height_on_screen < 0:
+                    height_on_screen = 0
+                if height_on_screen <= height_buffer:
                     for screen_y in range(height_on_screen, height_buffer):
                         y_buffer[screen_y] = color_map[x][y]
                     height_buffer = height_on_screen
