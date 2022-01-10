@@ -1,5 +1,8 @@
-import pygame
+import pygame as pg
 import sys
+import sqlite3
+from screen_impact_objects import Camera
+from structure_classes import *
 
 
 class App:
@@ -10,12 +13,12 @@ class App:
             with open('config.txt', 'r') as f:
                 config = {i.split('=')[0]: i.split('=')[1] for i in f.read().split('\n')}
             # Инициализация pygame
-            pygame.init()
+            pg.init()
             # Установка настроек приложения
             self.running = True
             self.SIZE = self.WIDTH, self.HEIGHT = (int(config['WIDTH']), int(config['HEIGHT']))
-            self.screen = pygame.display.set_mode(self.SIZE)
-            self.clock = pygame.time.Clock()
+            self.screen = pg.display.set_mode(self.SIZE)
+            self.clock = pg.time.Clock()
             self.FPS = int(config['FPS'])
             self.DISPLAY_FPS = bool(int(config['DISPLAY_FPS']))
         except KeyError as error:
@@ -28,35 +31,43 @@ class App:
                   f'Подробнее об ошибке:\n'
                   f'{str(error)}')
             self.terminate()
+        # Данные об оъектах
+        self.physical_objects = []
+        self.screen_objects = [Camera(Cords(20, 20, 300), Angles(0, -200, 45), self, self.WIDTH, self.HEIGHT)]
+        self.currect_map = []
 
     def update(self):
-        pass
+        """
+        GUI, RENDER, SKYBOX, COLLISIONS, CONTROLS, Physics
+        """
+        for obj in self.screen_objects:
+            obj.impact()
 
     def draw(self):
-        pygame.display.flip()
-        pass
+        pg.display.flip()
 
     def run(self):
         while self.running:
             self.update()
             self.draw()
 
-            [exit() for event in pygame.event.get() if event.type == pygame.QUIT]
+            [exit() for event in pg.event.get() if event.type == pg.QUIT]
             self.clock.tick(self.FPS)
 
             name = '???'
             if self.DISPLAY_FPS:
                 name += f' - FPS: {self.clock.get_fps()}'
-            pygame.display.set_caption(name)
+            pg.display.set_caption(name)
 
     def end(self):
         self.running = False
 
     def terminate(self):
-        pygame.quit()
+        pg.quit()
         sys.exit()
 
 
 if __name__ == '__main__':
     app = App()
     app.run()
+
