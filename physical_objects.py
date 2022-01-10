@@ -37,13 +37,13 @@ class Control(BaseObject):
             self.pos.z -= velocity
         if pressed_key[pg.K_w]:
             self.pos.x += velocity * math.cos(math.radians(self.ang.az))
-            self.pos.y += velocity * math.cos(math.radians(self.ang.az))
+            self.pos.y += velocity * math.sin(math.radians(self.ang.az))
         if pressed_key[pg.K_s]:
             self.pos.x -= velocity * math.cos(math.radians(self.ang.az))
-            self.pos.y -= velocity * math.cos(math.radians(self.ang.az))
+            self.pos.y -= velocity * math.sin(math.radians(self.ang.az))
         if pressed_key[pg.K_a]:
-            self.pos.x += velocity * math.cos(math.radians(self.ang.az))
+            self.pos.x += velocity * math.sin(math.radians(self.ang.az))
             self.pos.y -= velocity * math.cos(math.radians(self.ang.az))
         if pressed_key[pg.K_d]:
-            self.pos.x -= velocity * math.cos(math.radians(self.ang.az))
+            self.pos.x -= velocity * math.sin(math.radians(self.ang.az))
             self.pos.y += velocity * math.cos(math.radians(self.ang.az))

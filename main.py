@@ -1,6 +1,6 @@
 import pygame as pg
 import sys
-from screen_impact_objects import Camera
+from screen_impact_objects import *
 from structure_classes import *
 
 
@@ -32,7 +32,8 @@ class App:
             self.terminate()
         # Данные об оъектах
         self.physical_objects = []
-        self.screen_objects = [Camera(Cords(20, 20, 300), Angles(0, -200, 45), self, self.WIDTH, self.HEIGHT)]
+        n = Camera(Cords(20, 20, 300), Angles(0, -200, 45), self, self.WIDTH, self.HEIGHT)
+        self.screen_objects = [n, DebugMap(self, n)]
         self.currect_map = []
 
     def update(self):
@@ -41,7 +42,10 @@ class App:
         """
         for obj in self.screen_objects:
             obj.impact()
-            obj.update()
+            try:
+                obj.update()
+            except AttributeError:
+                pass
 
     def draw(self):
         pg.display.flip()
