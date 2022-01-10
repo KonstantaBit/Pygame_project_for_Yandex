@@ -41,6 +41,7 @@ class App:
         """
         for obj in self.screen_objects:
             obj.impact()
+            obj.update()
 
     def draw(self):
         pg.display.flip()

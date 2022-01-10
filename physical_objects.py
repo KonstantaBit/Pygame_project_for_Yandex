@@ -19,8 +19,31 @@ class PhysicObject(BaseObject):
 
 class Control(BaseObject):
     def update(self):
+        ay_speed = 3
+        az_speed = 3
+        velocity = 5
         pressed_key = pg.key.get_pressed()
         if pressed_key[pg.K_UP]:
-            self.ang.ay += self.vel
+            self.ang.ay += ay_speed
         if pressed_key[pg.K_DOWN]:
-            self.pitch -= self.vel
+            self.ang.ay -= ay_speed
+        if pressed_key[pg.K_LEFT]:
+            self.ang.az -= az_speed
+        if pressed_key[pg.K_RIGHT]:
+            self.ang.az += az_speed
+        if pressed_key[pg.K_q]:
+            self.pos.z += velocity
+        if pressed_key[pg.K_e]:
+            self.pos.z -= velocity
+        if pressed_key[pg.K_w]:
+            self.pos.x += velocity * math.cos(math.radians(self.ang.az))
+            self.pos.y += velocity * math.cos(math.radians(self.ang.az))
+        if pressed_key[pg.K_s]:
+            self.pos.x -= velocity * math.cos(math.radians(self.ang.az))
+            self.pos.y -= velocity * math.cos(math.radians(self.ang.az))
+        if pressed_key[pg.K_a]:
+            self.pos.x += velocity * math.cos(math.radians(self.ang.az))
+            self.pos.y -= velocity * math.cos(math.radians(self.ang.az))
+        if pressed_key[pg.K_d]:
+            self.pos.x -= velocity * math.cos(math.radians(self.ang.az))
+            self.pos.y += velocity * math.cos(math.radians(self.ang.az))

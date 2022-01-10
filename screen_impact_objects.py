@@ -1,6 +1,6 @@
 import math
 
-from physical_objects import BaseObject
+from physical_objects import *
 from voxel_render import VoxelRender
 
 
@@ -26,7 +26,7 @@ class Polygons(ScreenImpact):
     pass
 
 
-class Camera(BaseObject, ScreenImpact):
+class Camera(Control, ScreenImpact):
     def __init__(self, pos, ang, app, width=0, height=0, screen_x=0, screen_y=0):
         BaseObject.__init__(self, pos, ang)
         ScreenImpact.__init__(self, app)
@@ -36,9 +36,6 @@ class Camera(BaseObject, ScreenImpact):
         self.screen_y = screen_y
         self.FOV = math.radians(110)  # В градусах было
         self.view_distance = 1000
-
-    def update(self, pos, ang):
-        pass
 
     def impact(self):
         n = VoxelRender(self, self.app)
