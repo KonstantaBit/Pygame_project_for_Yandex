@@ -1,6 +1,5 @@
 import pygame as pg
 import sys
-import sqlite3
 from screen_impact_objects import Camera
 from structure_classes import *
 

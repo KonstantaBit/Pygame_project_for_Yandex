@@ -2,8 +2,6 @@ import pygame as pg
 import numpy as np
 import math
 from numba import njit
-import PIL
-from structure_classes import ThreadWithReturnValue
 
 
 height_map_img = pg.image.load('data/H1.png')
