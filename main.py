@@ -32,7 +32,7 @@ class App:
             self.terminate()
         # Данные об оъектах
         self.physical_objects = []
-        n = Camera(Cords(20, 20, 300), Angles(0, -200, 45), self, self.WIDTH, self.HEIGHT)
+        n = Camera(Cords(20, 20, 150), Angles(0, 82, 45), self, self.WIDTH, self.HEIGHT)
         self.screen_objects = [n, DebugMap(self, n)]
         self.currect_map = []
 

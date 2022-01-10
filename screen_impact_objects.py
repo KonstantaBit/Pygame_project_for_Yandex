@@ -38,7 +38,7 @@ class Camera(Control, ScreenImpact):
         self.screen_x = screen_x
         self.screen_y = screen_y
         self.FOV = math.radians(110)  # В градусах было
-        self.view_distance = 5000
+        self.view_distance = 50000
 
     def impact(self):
         n = VoxelRender(self, self.app)
@@ -52,6 +52,7 @@ class DebugMap(ScreenImpact):
         self.obj = obj
 
     def impact(self):
+        print(self.obj.pos, self.obj.ang, sep=' - ')
         pg.draw.circle(self.app.screen, 'white', (self.obj.pos.x, self.obj.pos.y), 10)
         pg.draw.line(self.app.screen, 'red', (self.obj.pos.x, self.obj.pos.y),
                      (self.obj.pos.x + 100 * math.cos(math.radians(self.obj.ang.az)),

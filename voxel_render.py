@@ -55,8 +55,10 @@ class VoxelRender:
         """
         для увеличения проиводительности, шаг луча каждый раз будет всё больше и больше,
         если равен = 0, то эффекта не будет
+        UPD:
+        Поверить не могу... это овермного дает производитьности
         """
-        self.jumping = 0
+        self.jumping = 0.05
 
     def update(self):
         ray_angle = math.radians(self.cam.ang.az) - self.cam.FOV / 2
