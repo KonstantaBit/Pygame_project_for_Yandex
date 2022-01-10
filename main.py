@@ -32,8 +32,7 @@ class App:
             self.terminate()
         # Данные об оъектах
         self.physical_objects = []
-        n = Camera(Cords(20, 20, 150), Angles(0, 82, 45), self, self.WIDTH, self.HEIGHT)
-        self.screen_objects = [n, DebugMap(self, n)]
+        self.screen_objects = [Camera(Cords(20, 20, 150), Angles(0, 82, 45), self, 300, 300, 50, 50)]
         self.currect_map = []
 
     def update(self):

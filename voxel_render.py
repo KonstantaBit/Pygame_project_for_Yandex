@@ -15,12 +15,12 @@ map_width = len(height_map)
 
 
 @njit(fastmath=True)
-def ray_cast(screen_height, cam_x, cam_y, cam_z, cam_ax,
+def ray_cast(app_height, height, start_y_pos, cam_x, cam_y, cam_z, cam_ax,
              cam_ay, cam_az, ray_distance, ray_angle, jumping, scale_height):
-    y_buffer = np.zeros((screen_height, 3))
+    y_buffer = np.zeros((app_height, 3))
     depth = 0
     step = 1
-    height_buffer = screen_height
+    height_buffer = 0
     first_contact = False
     while depth < ray_distance:
         depth += step
@@ -32,13 +32,15 @@ def ray_cast(screen_height, cam_x, cam_y, cam_z, cam_ax,
                 height_on_screen = int((cam_z - height_map[x][y][0]) /
                                        (depth * math.cos(math.radians(cam_az) - ray_angle)) * scale_height + cam_ay)
                 if not first_contact:
-                    height_buffer = min(height_on_screen, screen_height)
+                    height_buffer = min(height_on_screen, height)
                     first_contact = True
                 if height_on_screen < 0:
                     height_on_screen = 0
                 if height_on_screen <= height_buffer:
                     for screen_y in range(height_on_screen, height_buffer):
-                        y_buffer[screen_y] = color_map[x][y]
+                        if screen_y + start_y_pos >= app_height:
+                            break
+                        y_buffer[screen_y + start_y_pos] = color_map[x][y]
                     height_buffer = height_on_screen
     return y_buffer
 
@@ -47,11 +49,9 @@ class VoxelRender:
     def __init__(self, cam, app):
         self.app = app
         self.cam = cam
-        self.screen_array = np.zeros((cam.width, cam.height, 3), dtype=int)
+        self.screen_array = np.zeros((app.WIDTH, app.HEIGHT, 3), dtype=int)
         self.scale_height = 800
-        self.rays_count = cam.width  # Мы же желаем лучшего графона -_-
-        self.ray_width = cam.width / self.rays_count
-        self.scaling = 1
+        self.rays_count = cam.width
         """
         для увеличения проиводительности, шаг луча каждый раз будет всё больше и больше,
         если равен = 0, то эффекта не будет
@@ -64,7 +64,11 @@ class VoxelRender:
         ray_angle = math.radians(self.cam.ang.az) - self.cam.FOV / 2
         delta_angle = self.cam.FOV / self.rays_count
         for ray_num in range(self.rays_count):
-            self.screen_array[ray_num] = ray_cast(self.cam.height, self.cam.pos.x, self.cam.pos.y, self.cam.pos.z,
+            if ray_num + self.cam.screen_x >= self.app.WIDTH:
+                break
+            self.screen_array[ray_num + self.cam.screen_x] = ray_cast(self.app.HEIGHT,
+                                                                      self.cam.height, self.cam.screen_y,
+                                                  self.cam.pos.x, self.cam.pos.y, self.cam.pos.z,
                                                   self.cam.ang.ax, self.cam.ang.ay, self.cam.ang.az,
                                                   self.cam.view_distance, ray_angle, self.jumping, self.scale_height)
             ray_angle += delta_angle
