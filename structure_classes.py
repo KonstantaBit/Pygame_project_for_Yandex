@@ -30,9 +30,21 @@ class Angles:
         return f"ax: {self.ax}, ay: {self.ay}, az: {self.az}"
 
 
+class Field:
+    def __init__(self, screen_x: int, screen_y: int, width: int, height: int):
+        self.screen_x = screen_x
+        self.screen_y = screen_y
+        self.width = width
+        self.height = height
+
+    def __str__(self):
+        return f"screen_x: {self.screen_x}, screen_y: {self.screen_y}, width: {self.width}, height: {self.height}"
+
+
 def make_surface_rgba(array):
     """Returns a surface made from a [w, h, 4] numpy array with per-pixel alpha
     """
+    # Знакомтесь, бутылочное горлышко проекта)))
     shape = array.shape
     if len(shape) != 3 and shape[2] != 4:
         raise ValueError("Array not RGBA")
