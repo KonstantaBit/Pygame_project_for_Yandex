@@ -2,6 +2,7 @@ import pygame as pg
 import numpy as np
 import math
 from numba import njit
+from structure_classes import make_surface_rgba
 
 
 height_map_img = pg.image.load('data/H1.png')
@@ -17,7 +18,7 @@ map_width = len(height_map)
 @njit(fastmath=True)
 def ray_cast(app_height, height, start_y_pos, cam_x, cam_y, cam_z, cam_ax,
              cam_ay, cam_az, ray_distance, ray_angle, jumping, scale_height):
-    y_buffer = np.zeros((app_height, 3))
+    y_buffer = np.zeros((app_height, 4))
     depth = 0
     step = 1
     height_buffer = 0
@@ -40,7 +41,8 @@ def ray_cast(app_height, height, start_y_pos, cam_x, cam_y, cam_z, cam_ax,
                     for screen_y in range(height_on_screen, height_buffer):
                         if screen_y + start_y_pos >= app_height:
                             break
-                        y_buffer[screen_y + start_y_pos] = color_map[x][y]
+                        y_buffer[screen_y + start_y_pos] = [color_map[x][y][0], color_map[x][y][1],
+                                                            color_map[x][y][2], 255]
                     height_buffer = height_on_screen
     return y_buffer
 
@@ -49,7 +51,6 @@ class VoxelRender:
     def __init__(self, cam, app):
         self.app = app
         self.cam = cam
-        self.screen_array = np.zeros((app.WIDTH, app.HEIGHT, 3), dtype=int)
         self.scale_height = 800
         self.rays_count = cam.width
         """
@@ -61,6 +62,7 @@ class VoxelRender:
         self.jumping = 0.05
 
     def update(self):
+        self.screen_array = np.zeros((self.app.WIDTH, self.app.HEIGHT, 4), dtype=int)
         ray_angle = math.radians(self.cam.ang.az) - self.cam.FOV / 2
         delta_angle = self.cam.FOV / self.rays_count
         for ray_num in range(self.rays_count):
@@ -74,4 +76,5 @@ class VoxelRender:
             ray_angle += delta_angle
 
     def draw(self):
-       pg.surfarray.blit_array(self.app.screen, self.screen_array)
+        surface = make_surface_rgba(self.screen_array)
+        self.app.screen.blit(surface, (0, 0))

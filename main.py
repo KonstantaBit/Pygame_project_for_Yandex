@@ -16,7 +16,7 @@ class App:
             # Установка настроек приложения
             self.running = True
             self.SIZE = self.WIDTH, self.HEIGHT = (int(config['WIDTH']), int(config['HEIGHT']))
-            self.screen = pg.display.set_mode(self.SIZE)
+            self.screen = pg.display.set_mode(self.SIZE, pg.SCALED)
             self.clock = pg.time.Clock()
             self.FPS = int(config['FPS'])
             self.DISPLAY_FPS = bool(int(config['DISPLAY_FPS']))
@@ -32,7 +32,11 @@ class App:
             self.terminate()
         # Данные об оъектах
         self.physical_objects = []
-        self.screen_objects = [Camera(Cords(20, 20, 150), Angles(0, 82, 45), self, 300, 300, 50, 50)]
+        self.screen_objects = [Camera(Cords(20, 20, 150), Angles(0, 100, 45), self, 200, 100, 10, 10),
+                               Camera(Cords(20, 20, 150), Angles(0, 150, 45), self, 200, 100, 220, 10),
+                               Camera(Cords(20, 20, 150), Angles(0, 50, 45), self, 200, 100, 10, 120),
+                               Camera(Cords(20, 20, 150), Angles(0, 75, 45), self, 200, 100, 220, 120),
+                               ]
         self.currect_map = []
 
     def update(self):
@@ -48,6 +52,7 @@ class App:
 
     def draw(self):
         pg.display.flip()
+        self.screen.fill(0)
 
     def run(self):
         while self.running:
