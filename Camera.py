@@ -2,7 +2,7 @@ import math
 import pygame as pg
 import numpy as np
 from numba import njit
-from physical_objects import BaseObject
+from physical_objects import BaseObject, Bottle
 from structure_classes import Field
 
 
@@ -26,10 +26,11 @@ def ray_cast(screen_array,
              jumping, fov
              ):
     result_array = screen_array
-    step = 1
+
     ray_angle = math.radians(cam_az) - fov / 2
     for num_ray in range(ray_count):
         depth = 1
+        step = 1
         first_contact = False
         height_buffer = 0
         while depth < ray_distance:
@@ -64,13 +65,28 @@ class Camera:
         self.field = field
 
         # Настройки камеры
-        self.FOV = math.radians(120)  # В градусах
-        self.view_distance = 5000  # В пикселях
-        self.scale_height = 800  # В пикселях
+        self.FOV = math.radians(90)  # В градусах
+        self.view_distance = 2000  # В пикселях
+        self.scale_height = 400  # В пикселях
         self.rays_count = field.width
-        self.jumping = 0  # Область значений: 0 - 0.0001
+        self.jumping = 0.01  # Область значений: 0 - 0.0001
+
+    def shoot(self):
+        ray_angle = math.radians(self.target.ang.z)
+        for depth in range(self.view_distance):
+            x = int(self.target.pos.x + depth * math.cos(ray_angle))
+            if 0 < x < self.app.map_width:
+                y = int(self.target.pos.y + depth * math.sin(ray_angle))
+                if 0 < y < self.app.map_height:
+                    for b in self.app.objects:
+                        if math.hypot(x - b.x, y - b.y) < 5:
+                            self.app.count += 1
+                            self.app.objects.pop(self.app.objects.index(b))
+                            self.app.load_map()
 
     def update(self):
+        if self.app.clicked_left:
+            self.shoot()
         self.target.update()
         self.screen_array = np.zeros((self.app.WIDTH, self.app.HEIGHT, 3), dtype=int)
         self.screen_array = render_skybox(self.app.skybox.copy(), self.target.ang.z, self.app.WIDTH)
